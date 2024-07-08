@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="game"
-    @keydown="keydown"
-    @touchstart="myTouchstart"
-    @touchmove="myTouchmove"
-    @touchend="myTouchend"
-  >
+  <div class="game">
     <div id="logo">
       <img src="~@/assets/yuki.png" />
       <div>扫描这里试玩手机版</div>
@@ -53,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   getRandom,
   setCookie,
@@ -64,6 +58,7 @@ import {
 } from "@/plugin/commonFun/commonFun";
 @Component
 export default class HelloWorld extends Vue {
+  gameLength = 4;
   score = 0;
   history = 0;
   count = 0;
@@ -96,6 +91,16 @@ export default class HelloWorld extends Vue {
   }
   mounted() {
     this.init();
+    document.addEventListener("keydown", this.keydown);
+    document.addEventListener("touchstart", this.myTouchstart);
+    document.addEventListener("touchmove", this.myTouchmove);
+    document.addEventListener("touchend", this.myTouchend);
+  }
+  beforeDestroy() {
+    document.removeEventListener("keydown", this.keydown);
+    document.removeEventListener("touchstart", this.myTouchstart);
+    document.removeEventListener("touchmove", this.myTouchmove);
+    document.removeEventListener("touchend", this.myTouchend);
   }
   init() {
     this.getDom();
@@ -107,8 +112,8 @@ export default class HelloWorld extends Vue {
   }
   setDom() {
     this.myListObject = {};
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < this.gameLength; i++) {
+      for (let j = 0; j < this.gameLength; j++) {
         this.myList.push([i, j]);
         this.myListObject[`${i},${j}`] = 0;
       }
@@ -130,15 +135,15 @@ export default class HelloWorld extends Vue {
     }
   }
   addNum() {
-    console.log(this.rem);
     for (let i = 0; i < this.rem.length; i++) {
       let rand = Math.round(Math.random() + 1) * 2;
       let numrem = this.rem[i] - 1;
-      this.myListObject["" + this.myList[numrem]] = String(rand);
+      this.myListObject[this.myList[numrem]] = String(rand);
     }
   }
   keydown(e: any) {
-    switch (e.which) {
+    console.log(e.keyCode);
+    switch (e.keyCode) {
       case 37:
         this.myOnkeydown(37);
         break; //左
@@ -191,198 +196,79 @@ export default class HelloWorld extends Vue {
     }
   }
   myOnkeydown(num: number) {
-    const savearr1 = [];
-    const savearr2 = [];
-    const savearr3 = [];
-    const savearr4 = [];
-    const arrlist1 = [];
-    const arrlist2 = [];
-    const arrlist3 = [];
-    const arrlist4 = [];
-    let save1 = [];
-    let save2 = [];
-    let save3 = [];
-    let save4 = [];
     if (num == 37) {
-      this.leftright();
-      for (let i = 0; i < 4; i++) {
-        savearr1.push($(this.arr1[i]).children().text());
-        savearr2.push($(this.arr2[i]).children().text());
-        savearr3.push($(this.arr3[i]).children().text());
-        savearr4.push($(this.arr4[i]).children().text());
-      }
-      for (let i = 0; i < 4; i++) {
-        arrlist1[i] = savearr1[i];
-        arrlist2[i] = savearr2[i];
-        arrlist3[i] = savearr3[i];
-        arrlist4[i] = savearr4[i];
-      }
-      save1 = this.changArray(savearr1);
-      save2 = this.changArray(savearr2);
-      save3 = this.changArray(savearr3);
-      save4 = this.changArray(savearr4);
-      for (let j = 0; j < 4; j++) {
-        $(this.arr1[j]).children().text(save1[j]);
-        $(this.arr2[j]).children().text(save2[j]);
-        $(this.arr3[j]).children().text(save3[j]);
-        $(this.arr4[j]).children().text(save4[j]);
-      }
-      if (
-        String(arrlist1) !== String(savearr1) ||
-        String(arrlist2) !== String(savearr2) ||
-        String(arrlist3) !== String(savearr3) ||
-        String(arrlist4) !== String(savearr4)
-      ) {
-        this.born();
-      }
+      this.leftright("left");
+
       this.grade();
       this.gameover(37);
       this.win();
     } else if (num == 38) {
       this.updown();
-      for (let i = 0; i < 4; i++) {
-        savearr1.push($(this.newarr1[i]).children().text());
-        savearr2.push($(this.newarr2[i]).children().text());
-        savearr3.push($(this.newarr3[i]).children().text());
-        savearr4.push($(this.newarr4[i]).children().text());
-      }
-      for (let i = 0; i < 4; i++) {
-        arrlist1[i] = savearr1[i];
-        arrlist2[i] = savearr2[i];
-        arrlist3[i] = savearr3[i];
-        arrlist4[i] = savearr4[i];
-      }
-      save1 = this.changArray(savearr1);
-      save2 = this.changArray(savearr2);
-      save3 = this.changArray(savearr3);
-      save4 = this.changArray(savearr4);
-      for (let j = 0; j < 4; j++) {
-        $(this.newarr1[j]).children().text(save1[j]);
-        $(this.newarr2[j]).children().text(save2[j]);
-        $(this.newarr3[j]).children().text(save3[j]);
-        $(this.newarr4[j]).children().text(save4[j]);
-      }
-      if (
-        String(arrlist1) !== String(savearr1) ||
-        String(arrlist2) !== String(savearr2) ||
-        String(arrlist3) !== String(savearr3) ||
-        String(arrlist4) !== String(savearr4)
-      ) {
-        this.born();
-      }
+
       this.grade();
       this.gameover(38);
       this.win();
     } else if (num == 39) {
-      this.leftright();
-      for (let x = 3; x > -1; x--) {
-        savearr1.push($(this.arr1[x]).children().text());
-        savearr2.push($(this.arr2[x]).children().text());
-        savearr3.push($(this.arr3[x]).children().text());
-        savearr4.push($(this.arr4[x]).children().text());
-      }
-      for (let i = 0; i < 4; i++) {
-        arrlist1[i] = savearr1[i];
-        arrlist2[i] = savearr2[i];
-        arrlist3[i] = savearr3[i];
-        arrlist4[i] = savearr4[i];
-      }
-      save1 = this.changArray(savearr1).reverse();
-      save2 = this.changArray(savearr2).reverse();
-      save3 = this.changArray(savearr3).reverse();
-      save4 = this.changArray(savearr4).reverse();
-      for (let j = 3; j > -1; j--) {
-        $(this.arr1[j]).children().text(save1[j]);
-        $(this.arr2[j]).children().text(save2[j]);
-        $(this.arr3[j]).children().text(save3[j]);
-        $(this.arr4[j]).children().text(save4[j]);
-      }
-      if (
-        String(arrlist1.reverse()) !== String(savearr1) ||
-        String(arrlist2.reverse()) !== String(savearr2) ||
-        String(arrlist3.reverse()) !== String(savearr3) ||
-        String(arrlist4.reverse()) !== String(savearr4)
-      ) {
-        this.born();
-      }
+      this.leftright("right");
+
       this.grade();
       this.gameover(39);
       this.win();
     } else if (num == 40) {
       this.updown();
-      for (let x = 3; x > -1; x--) {
-        savearr1.push($(this.newarr1[x]).children().text());
-        savearr2.push($(this.newarr2[x]).children().text());
-        savearr3.push($(this.newarr3[x]).children().text());
-        savearr4.push($(this.newarr4[x]).children().text());
-      }
-      for (let i = 0; i < 4; i++) {
-        arrlist1[i] = savearr1[i];
-        arrlist2[i] = savearr2[i];
-        arrlist3[i] = savearr3[i];
-        arrlist4[i] = savearr4[i];
-      }
-      save1 = this.changArray(savearr1).reverse();
-      save2 = this.changArray(savearr2).reverse();
-      save3 = this.changArray(savearr3).reverse();
-      save4 = this.changArray(savearr4).reverse();
-      for (let j = 3; j > -1; j--) {
-        $(this.newarr1[j]).children().text(save1[j]);
-        $(this.newarr2[j]).children().text(save2[j]);
-        $(this.newarr3[j]).children().text(save3[j]);
-        $(this.newarr4[j]).children().text(save4[j]);
-      }
-      if (
-        String(arrlist1.reverse()) !== String(savearr1) ||
-        String(arrlist2.reverse()) !== String(savearr2) ||
-        String(arrlist3.reverse()) !== String(savearr3) ||
-        String(arrlist4.reverse()) !== String(savearr4)
-      ) {
-        this.born();
-      }
+
       this.grade();
       this.gameover(40);
       this.win();
     }
   }
   //按下左右之后
-  leftright() {
-    this.arr1 = [];
-    this.arr2 = [];
-    this.arr3 = [];
-    this.arr4 = [];
-    for (let prop of this.numbox) {
-      let saveline = $(prop).attr("line");
-      if (saveline == 1) {
-        this.arr1.push(prop);
-      } else if (saveline == 2) {
-        this.arr2.push(prop);
-      } else if (saveline == 3) {
-        this.arr3.push(prop);
-      } else if (saveline == 4) {
-        this.arr4.push(prop);
+  leftright(direction: "left" | "right") {
+    let savenum = 0;
+    let num = 0;
+    let saveArr = [];
+    let newMyList =
+      direction === "left" ? [...this.myList] : [...this.myList.reverse()];
+    for (let value of newMyList) {
+      num = value[0];
+      if (num === savenum) {
+        saveArr.push(this.myListObject[value]);
+        // console.log("??", saveArr, num + 1 + "行");
+      } else {
+        const arr = [...saveArr];
+        while (arr.includes(0)) {
+          arr.splice(arr.indexOf(0), 1);
+        }
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i] === arr[i + 1]) {
+            arr[i] = "" + arr[i] * 2;
+            arr[i + 1] = 0;
+            arr.splice(arr.indexOf(0), 1);
+          }
+        }
+        for (let i = 0; i < this.gameLength; i++) {
+          if (direction === "left") {
+            console.log(`${savenum},${i}`, arr[i] || 0);
+            // TODO:出不来!!!!
+            this.$set(this.myListObject, `${savenum},${i}`, arr[i] || 0);
+          } else {
+            // TODO:出不来!!!!
+            this.$set(
+              this.myListObject,
+              `${savenum},${this.gameLength - i - 1}`,
+              arr[i] || 0
+            );
+          }
+        }
+
+        savenum = num;
+        saveArr = [];
+        saveArr.push(this.myListObject[value]);
       }
     }
   }
   //按下上下之后
-  updown() {
-    this.newarr1 = [];
-    this.newarr2 = [];
-    this.newarr3 = [];
-    this.newarr4 = [];
-    for (let prop of this.numbox) {
-      let savelist = $(prop).attr("list");
-      if (savelist == 1) {
-        this.newarr1.push(prop);
-      } else if (savelist == 2) {
-        this.newarr2.push(prop);
-      } else if (savelist == 3) {
-        this.newarr3.push(prop);
-      } else if (savelist == 4) {
-        this.newarr4.push(prop);
-      }
-    }
-  }
+  updown() {}
   //算法
   changArray(array: any): Array<any> {
     let newarray = array;
@@ -442,17 +328,20 @@ export default class HelloWorld extends Vue {
     }
     return newarray;
   }
-  //每动一下生成一个新的
+  /**
+   * @description: 每动一下生成一个新的
+   * @return {*}
+   */
   born() {
     const savespan = [];
-    for (let span of this.txt) {
-      if ($(span).text() == "0") {
-        savespan.push($(span));
+    for (let span of this.myList) {
+      if (this.myListObject["" + span] == 0) {
+        savespan.push("" + span);
       }
     }
     let spannum = getRandom(0, savespan.length - 1);
     let rand = Math.round(Math.random() + 1) * 2;
-    savespan[spannum].text(String(rand));
+    this.myListObject[savespan[spannum]] = String(rand);
   }
   /**
    * @description: 分数
@@ -488,10 +377,9 @@ export default class HelloWorld extends Vue {
     }
   }
   win() {
-    for (let prop of this.txt) {
-      if ($(prop).text() == "2048") {
+    for (let prop of this.myList) {
+      if (this.myListObject["" + prop] == 2048) {
         setTimeout(() => {
-          $(document).off("keydown");
           this.showAlert = true;
           this.endText = "恭喜通关！";
 
@@ -501,69 +389,65 @@ export default class HelloWorld extends Vue {
     }
   }
   gameover(num: any) {
-    let proparr = [];
-    let truelist = [];
-    let savearr1 = [];
-    let savearr2 = [];
-    let savearr3 = [];
-    let savearr4 = [];
-    let savearr5 = [];
-    let savearr6 = [];
-    let savearr7 = [];
-    let savearr8 = [];
-    for (let prop of this.txt) {
-      proparr.push(Number($(prop).text()));
-    }
-    for (let i = 0; i < proparr.length; i++) {
-      if (proparr[i] == 0) {
-        proparr.splice(i, 1);
-        i--;
-      }
-    }
-    this.updown();
-    this.leftright();
-    for (let i = 0; i < 4; i++) {
-      savearr1.push($(this.newarr1[i]).children().text());
-      savearr2.push($(this.newarr2[i]).children().text());
-      savearr3.push($(this.newarr3[i]).children().text());
-      savearr4.push($(this.newarr4[i]).children().text());
-      savearr5.push($(this.arr1[i]).children().text());
-      savearr6.push($(this.arr2[i]).children().text());
-      savearr7.push($(this.arr3[i]).children().text());
-      savearr8.push($(this.arr4[i]).children().text());
-    }
-    if (
-      proparr.length == 16 &&
-      savearr1[0] !== savearr1[1] &&
-      savearr1[1] !== savearr1[2] &&
-      savearr1[2] !== savearr1[3] &&
-      savearr2[0] !== savearr2[1] &&
-      savearr2[1] !== savearr2[2] &&
-      savearr2[2] !== savearr2[3] &&
-      savearr3[0] !== savearr3[1] &&
-      savearr3[1] !== savearr3[2] &&
-      savearr3[2] !== savearr3[3] &&
-      savearr4[0] !== savearr4[1] &&
-      savearr4[1] !== savearr4[2] &&
-      savearr4[2] !== savearr4[3] &&
-      savearr5[0] !== savearr5[1] &&
-      savearr5[1] !== savearr5[2] &&
-      savearr5[2] !== savearr5[3] &&
-      savearr6[0] !== savearr6[1] &&
-      savearr6[1] !== savearr6[2] &&
-      savearr6[2] !== savearr6[3] &&
-      savearr7[0] !== savearr7[1] &&
-      savearr7[1] !== savearr7[2] &&
-      savearr7[2] !== savearr7[3] &&
-      savearr8[0] !== savearr8[1] &&
-      savearr8[1] !== savearr8[2] &&
-      savearr8[2] !== savearr8[3]
-    ) {
-      this.count++;
-    }
+    // let proparr = [];
+    // let truelist = [];
+    // let savearr1 = [];
+    // let savearr2 = [];
+    // let savearr3 = [];
+    // let savearr4 = [];
+    // let savearr5 = [];
+    // let savearr6 = [];
+    // let savearr7 = [];
+    // let savearr8 = [];
+    // for (let prop of this.txt) {
+    //   proparr.push(Number($(prop).text()));
+    // }
+    // for (let i = 0; i < proparr.length; i++) {
+    //   if (proparr[i] == 0) {
+    //     proparr.splice(i, 1);
+    //     i--;
+    //   }
+    // }
+    // for (let i = 0; i < 4; i++) {
+    //   savearr1.push($(this.newarr1[i]).children().text());
+    //   savearr2.push($(this.newarr2[i]).children().text());
+    //   savearr3.push($(this.newarr3[i]).children().text());
+    //   savearr4.push($(this.newarr4[i]).children().text());
+    //   savearr5.push($(this.arr1[i]).children().text());
+    //   savearr6.push($(this.arr2[i]).children().text());
+    //   savearr7.push($(this.arr3[i]).children().text());
+    //   savearr8.push($(this.arr4[i]).children().text());
+    // }
+    // if (
+    //   proparr.length == 16 &&
+    //   savearr1[0] !== savearr1[1] &&
+    //   savearr1[1] !== savearr1[2] &&
+    //   savearr1[2] !== savearr1[3] &&
+    //   savearr2[0] !== savearr2[1] &&
+    //   savearr2[1] !== savearr2[2] &&
+    //   savearr2[2] !== savearr2[3] &&
+    //   savearr3[0] !== savearr3[1] &&
+    //   savearr3[1] !== savearr3[2] &&
+    //   savearr3[2] !== savearr3[3] &&
+    //   savearr4[0] !== savearr4[1] &&
+    //   savearr4[1] !== savearr4[2] &&
+    //   savearr4[2] !== savearr4[3] &&
+    //   savearr5[0] !== savearr5[1] &&
+    //   savearr5[1] !== savearr5[2] &&
+    //   savearr5[2] !== savearr5[3] &&
+    //   savearr6[0] !== savearr6[1] &&
+    //   savearr6[1] !== savearr6[2] &&
+    //   savearr6[2] !== savearr6[3] &&
+    //   savearr7[0] !== savearr7[1] &&
+    //   savearr7[1] !== savearr7[2] &&
+    //   savearr7[2] !== savearr7[3] &&
+    //   savearr8[0] !== savearr8[1] &&
+    //   savearr8[1] !== savearr8[2] &&
+    //   savearr8[2] !== savearr8[3]
+    // ) {
+    //   this.count++;
+    // }
     if (this.count == 1) {
-      $(document).off("keydown");
-
       setTimeout(() => {
         console.log(1);
         this.endText = "游戏结束!";
@@ -576,6 +460,10 @@ export default class HelloWorld extends Vue {
     this.showAlert = false;
     this.myListObject = {};
     this.init();
+  }
+  @Watch("myListObject", { immediate: true, deep: true })
+  onmyListObject(val: any, oldVal: any) {
+    console.log(val, oldVal);
   }
 }
 </script>
