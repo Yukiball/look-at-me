@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  deploy-gh-pages:
+  deploy-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +37,6 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
         run: |-
           npm run build
-          > /dist
 
       - name: 部署文档
         uses: JamesIves/github-pages-deploy-action@v4
