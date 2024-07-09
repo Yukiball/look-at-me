@@ -46,7 +46,6 @@ export class myPromise {
     if (this.state === PENDING) return;
     while (this.handler.length) {
       const { onResolved, onRejected, resolve, reject } = this.handler.shift();
-      if (this.state === PENDING) return;
       if (this.state === FULFILLED) {
         this.isFunc(onResolved, resolve, reject);
       } else {
@@ -65,21 +64,20 @@ export class myPromise {
 const p = new myPromise((res, rej) => {
   setTimeout(() => {
     rej(333);
-    console.log(p);
   }, 1000);
 });
 
-p.then(1233, (error: any) => {
-  console.log("失败", error);
-  return 456;
-}).then(
-  (res: any) => {
-    console.log(res);
-  },
-  (error: any) => {
-    console.log("失败", error);
-  }
-);
+// p.then(1233, (error: any) => {
+//   console.log("失败", error);
+//   return 456;
+// }).then(
+//   (res: any) => {
+//     console.log(res);
+//   },
+//   (error: any) => {
+//     console.log("失败", error);
+//   }
+// );
 
 // p.then(
 //   (val: any) => {

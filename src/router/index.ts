@@ -1,3 +1,13 @@
+/*
+ * @Author: yukiball yukiball
+ * @Date: 2024-07-09 17:50:51
+ * @LastEditors: yukiball yukiball
+ * @LastEditTime: 2024-07-10 00:53:07
+ * @FilePath: \look-at-me\src\router\index.ts
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+ */
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -22,7 +32,6 @@ const routes: Array<RouteConfig> = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
   base: process.env.BASE_URL,
   routes,
 });
