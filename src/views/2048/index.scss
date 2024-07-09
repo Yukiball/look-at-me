@@ -34,17 +34,28 @@ body {
   display: block;
 }
 .wrapper {
-  position: relative;
+  position: absolute;
   width: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
   margin: 0 auto;
 }
 .game .top .number {
   font-weight: bold;
   font-size: 80px;
+  margin-right: 20px;
+}
+.wrapper .top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 500px;
 }
 .wrapper .top .grade {
-  width: 250px;
-  height: 90px;
+  display: flex;
+  justify-content: center;
   float: right;
 }
 .wrapper .top .grade .now,
@@ -52,21 +63,20 @@ body {
   background-color: #bbada0;
   font-size: 18px;
   font-weight: bold;
-  float: left;
   border-radius: 5px;
   text-align: center;
   color: #eee4da;
-  margin-top: 10px;
 }
 .wrapper .top .grade .rem {
   font-size: 30px;
   color: #fff;
 }
 .wrapper .top .grade .now {
-  margin-right: 10px;
+  margin: auto 10px auto 0;
   width: 100px;
 }
 .wrapper .top .grade .history {
+  margin: auto;
   width: 140px;
 }
 .wrapper .top::after {
@@ -75,7 +85,7 @@ body {
   clear: both;
 }
 .wrapper .text {
-  margin-bottom: 10px;
+  margin: 20px 0;
 }
 .wrapper .box {
   box-sizing: border-box;
@@ -206,21 +216,36 @@ body {
   border-radius: 5px;
 }
 
+.jump {
+  margin: 20px 20px 0 20px;
+  font-size: 1.2rem;
+  display: inline-block;
+}
 @media screen and (max-width: 520px) {
   #logo {
     display: none;
   }
-  .wrapper {
-    position: relative;
-    width: 280px;
-    height: 100%;
-    margin: 0 auto;
-  }
+
   .game .top .number {
     font-weight: bold;
     line-height: 55px;
-    margin-top: 15px;
     font-size: 27px;
+  }
+  .wrapper {
+    position: absolute;
+    width: 100vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    box-sizing: border-box;
+  }
+  .wrapper .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 80px;
+    width: 100vw;
   }
   .wrapper .top .grade {
     width: 190px;
@@ -236,7 +261,6 @@ body {
     border-radius: 5px;
     text-align: center;
     color: #eee4da;
-    margin-top: 10px;
   }
   .wrapper .top .grade .rem {
     font-size: 25px;
@@ -254,15 +278,10 @@ body {
     display: block;
     clear: both;
   }
-  .wrapper .text {
-    position: relative;
-    padding-top: 40%;
-    font-size: 16px;
-  }
   .wrapper .box {
-    position: absolute;
-    top: 100%;
+    position: relative;
     box-sizing: border-box;
+    margin: 0 auto;
     height: 280px;
     width: 281px;
     background-color: #bbada0;
@@ -366,5 +385,11 @@ body {
     line-height: 30px;
     font-size: 20px;
     border-radius: 5px;
+  }
+
+  .jump {
+    width: 100vw;
+    margin: 20px 0px 0 0px;
+    font-size: 1.2rem;
   }
 }

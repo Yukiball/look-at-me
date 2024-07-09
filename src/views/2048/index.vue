@@ -2,6 +2,7 @@
   <div class="game">
     <div class="wrapper">
       <div class="top">
+        <h1 class="number">2048</h1>
         <div class="grade">
           <div class="now">
             分数
@@ -12,7 +13,6 @@
             <div class="rem">{{ history }}</div>
           </div>
         </div>
-        <h1 class="number">2048</h1>
       </div>
       <div class="text">将相同数字融合相加，得到 2048 获胜!</div>
       <div class="box">
@@ -27,6 +27,13 @@
           </li>
         </ul>
       </div>
+
+      <a
+        class="jump"
+        href=" https://github.com/Yukiball/look-at-me/blob/master/src/views/2048/index.vue "
+        target="_blank"
+        >想看源码点这里</a
+      >
     </div>
     <div class="alert" v-if="showAlert">
       <span class="over">{{ endText }}</span
