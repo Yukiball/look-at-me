@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/plugin/commonFun/promise++.js", "src/plugin/commonFun/promise++.js"  ],
   "exclude": [
     "node_modules"
   ]

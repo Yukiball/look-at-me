@@ -21,7 +21,7 @@
       <div class="text">将相同数字融合相加，得到 2048 获胜!</div>
       <div class="box">
         <ul class="con">
-          <li
+          <!-- <li
             class="numbox"
             v-for="(value, index) of myList"
             :key="index"
@@ -34,6 +34,14 @@
               v-show="+listObj(value[0], value[1])"
               >{{ listObj(value[0], value[1]) }}</span
             >
+          </li> -->
+          <li
+            class="numbox"
+            v-for="(val, key, index) of myListObject"
+            :key="index"
+            :count="key"
+          >
+            <span :class="boxcolor(val)" v-show="+val">{{ val }}</span>
           </li>
         </ul>
       </div>
@@ -61,30 +69,32 @@ export default class HelloWorld extends Vue {
   gameLength = 4;
   score = 0;
   history = 0;
-  count = 0;
   txt: any; // 应该是HTMLElement，但是还得有初始值。
   rem: Array<any> = [];
-  myList: Array<any> = [];
-  myListObject: any;
+  // myList: Array<any> = [];
+  myListObject: any = {};
   startX = 0;
   startY = 0;
   endX = 0;
   endY = 0;
   numbox: any;
-  arr1: Array<any> = [];
-  arr2: Array<any> = [];
-  arr3: Array<any> = [];
-  arr4: Array<any> = [];
-
-  newarr1: Array<any> = [];
-  newarr2: Array<any> = [];
-  newarr3: Array<any> = [];
-  newarr4: Array<any> = [];
   showAlert = false;
   endText = "";
+  toDirection = {
+    37: "left",
+    38: "up",
+    39: "right",
+    40: "down",
+  };
+  get myList() {
+    return Object.keys(this.myListObject);
+  }
+  // boxcolor(i: number, j: number) {
+  //   return `num${this.listObj(i, j)}`;
+  // }
 
-  boxcolor(i: number, j: number) {
-    return `num${this.listObj(i, j)}`;
+  boxcolor(val: number) {
+    return `num${val}`;
   }
   listObj(i: number, j: number) {
     return this.myListObject[`${i},${j}`];
@@ -114,8 +124,9 @@ export default class HelloWorld extends Vue {
     this.myListObject = {};
     for (let i = 0; i < this.gameLength; i++) {
       for (let j = 0; j < this.gameLength; j++) {
-        this.myList.push([i, j]);
-        this.myListObject[`${i},${j}`] = 0;
+        // this.myList.push([i, j]);
+        this.$set(this.myListObject, `${i},${j}`, 0);
+        // this.myListObject[`${i},${j}`] = 0;
       }
     }
     this.$nextTick(() => {
@@ -124,25 +135,26 @@ export default class HelloWorld extends Vue {
   }
   getNum() {
     let newArr = [];
+    this.rem = [];
     const ran = getRandom(2, 4); //一开始生成几个块
-    for (let i = 0; i < 100; i++) {
-      const num = getRandom(1, 16);
+    for (;;) {
+      const num = getRandom(0, 15);
       newArr.push(num);
       this.rem = Array.from(new Set(newArr));
       if (this.rem.length === ran) {
         this.addNum(); //初始化
+        return;
       }
     }
   }
   addNum() {
     for (let i = 0; i < this.rem.length; i++) {
       let rand = Math.round(Math.random() + 1) * 2;
-      let numrem = this.rem[i] - 1;
-      this.myListObject[this.myList[numrem]] = String(rand);
+      let numrem = this.rem[i];
+      this.$set(this.myListObject, this.myList[numrem], rand);
     }
   }
   keydown(e: any) {
-    console.log(e.keyCode);
     switch (e.keyCode) {
       case 37:
         this.myOnkeydown(37);
@@ -195,45 +207,64 @@ export default class HelloWorld extends Vue {
       this.myOnkeydown(37);
     }
   }
-  myOnkeydown(num: number) {
-    if (num == 37) {
-      this.leftright("left");
-
+  checkSame(saveObj: any, newObj: any) {
+    for (let val of this.myList) {
+      if (saveObj[val] !== newObj[val]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  myOnkeydown(num: 37 | 38 | 39 | 40) {
+    let save = { ...this.myListObject };
+    this.changeDirection(num);
+    if (!this.checkSame(save, this.myListObject)) {
+      this.born();
       this.grade();
-      this.gameover(37);
-      this.win();
-    } else if (num == 38) {
-      this.updown();
-
-      this.grade();
-      this.gameover(38);
-      this.win();
-    } else if (num == 39) {
-      this.leftright("right");
-
-      this.grade();
-      this.gameover(39);
-      this.win();
-    } else if (num == 40) {
-      this.updown();
-
-      this.grade();
-      this.gameover(40);
+      this.gameover();
       this.win();
     }
   }
-  //按下左右之后
-  leftright(direction: "left" | "right") {
-    let savenum = 0;
-    let num = 0;
+  /**
+   * @description: 点击上下左右
+   * @param {*} direction
+   * @return {*}
+   */
+  changeDirection(keycode: 37 | 38 | 39 | 40) {
+    let direction = this.toDirection[keycode];
     let saveArr = [];
-    let newMyList =
-      direction === "left" ? [...this.myList] : [...this.myList.reverse()];
+    let newMyList: Array<string> = [];
+    let saveLine: number;
+    let line: number;
+    if (direction === "up" || direction === "down") {
+      let useArr: Array<string> = [...this.myList];
+      useArr = direction === "up" ? useArr : useArr.reverse();
+      for (let i = 0; i < this.gameLength; i++) {
+        let e = i;
+        let time = 0;
+        while (time < this.gameLength) {
+          newMyList.push(...useArr.slice(e, e + 1));
+          e += this.gameLength;
+          time++;
+        }
+      }
+    } else {
+      newMyList = [...this.myList];
+      newMyList = direction === "right" ? newMyList.reverse() : newMyList;
+    }
+    if (direction === "left" || direction === "up") {
+      saveLine = line = 0;
+    } else {
+      saveLine = line = this.gameLength - 1;
+    }
+    newMyList.push("n,n"); // 要不到不了最后一行
     for (let value of newMyList) {
-      num = value[0];
-      if (num === savenum) {
+      line =
+        direction === "right" || direction === "left"
+          ? +value.split(",")[0]
+          : +value.split(",")[1];
+      if (line === saveLine) {
         saveArr.push(this.myListObject[value]);
-        // console.log("??", saveArr, num + 1 + "行");
       } else {
         const arr = [...saveArr];
         while (arr.includes(0)) {
@@ -241,92 +272,37 @@ export default class HelloWorld extends Vue {
         }
         for (let i = 0; i < arr.length; i++) {
           if (arr[i] === arr[i + 1]) {
-            arr[i] = "" + arr[i] * 2;
+            arr[i] = arr[i] * 2;
+            this.score += arr[i];
             arr[i + 1] = 0;
             arr.splice(arr.indexOf(0), 1);
           }
         }
         for (let i = 0; i < this.gameLength; i++) {
           if (direction === "left") {
-            console.log(`${savenum},${i}`, arr[i] || 0);
-            // TODO:出不来!!!!
-            this.$set(this.myListObject, `${savenum},${i}`, arr[i] || 0);
-          } else {
-            // TODO:出不来!!!!
+            this.$set(this.myListObject, `${saveLine},${i}`, arr[i] || 0);
+          } else if (direction === "right") {
             this.$set(
               this.myListObject,
-              `${savenum},${this.gameLength - i - 1}`,
+              `${saveLine},${this.gameLength - i - 1}`,
+              arr[i] || 0
+            );
+          } else if (direction === "up") {
+            this.$set(this.myListObject, `${i},${saveLine}`, arr[i] || 0);
+          } else {
+            this.$set(
+              this.myListObject,
+              `${this.gameLength - i - 1},${saveLine}`,
               arr[i] || 0
             );
           }
         }
 
-        savenum = num;
+        saveLine = line;
         saveArr = [];
         saveArr.push(this.myListObject[value]);
       }
     }
-  }
-  //按下上下之后
-  updown() {}
-  //算法
-  changArray(array: any): Array<any> {
-    let newarray = array;
-    for (let i = 0; i < 4; i++) {
-      if (array[i] == "0") {
-        array.splice(i, 1);
-        i--;
-      }
-    }
-    if (array.length == 0) {
-      array.push("0", "0", "0", "0");
-    } else if (array.length == 1) {
-      array.push("0", "0", "0");
-    } else if (array.length == 2) {
-      if (array[0] == array[1]) {
-        array[0] = String(Number(array[0]) * 2);
-        array[1] = "0";
-        this.score += Number(array[0]);
-      }
-      array.push("0", "0");
-    } else if (array.length == 3) {
-      if (array[0] == array[1]) {
-        array[0] = String(parseInt(array[0]) * 2);
-        array[1] = array[2];
-        array[2] = "0";
-        this.score += Number(array[0]);
-      } else if (array[0] !== array[1] && array[1] == array[2]) {
-        array[1] = String(parseInt(array[1]) * 2);
-        array[2] = "0";
-        this.score += Number(array[1]);
-      }
-      array.push("0");
-    } else if (array.length == 4) {
-      if (array[0] == array[1]) {
-        array[0] = String(parseInt(array[0]) * 2);
-        this.score += Number(array[0]);
-        if (array[2] == array[3]) {
-          array[2] = String(Number(array[2]) * 2);
-          array[3] = "0";
-          this.score += Number(array[2]);
-        }
-        array[1] = array[2];
-        array[2] = array[3];
-        array[3] = "0";
-      } else if (array[0] !== array[1]) {
-        if (array[1] == array[2]) {
-          array[1] = String(parseInt(array[1]) * 2);
-          array[2] = array[3];
-          array[3] = "0";
-          this.score += Number(array[1]);
-        } else if (array[2] == array[3]) {
-          array[2] = String(Number(array[2]) * 2);
-          array[3] = "0";
-          this.score += Number(array[2]);
-        }
-      }
-    }
-    return newarray;
   }
   /**
    * @description: 每动一下生成一个新的
@@ -334,45 +310,29 @@ export default class HelloWorld extends Vue {
    */
   born() {
     const savespan = [];
-    for (let span of this.myList) {
-      if (this.myListObject["" + span] == 0) {
-        savespan.push("" + span);
+    for (let val of this.myList) {
+      if (this.myListObject[val] == 0) {
+        savespan.push(val);
       }
     }
     let spannum = getRandom(0, savespan.length - 1);
     let rand = Math.round(Math.random() + 1) * 2;
-    this.myListObject[savespan[spannum]] = String(rand);
+    this.myListObject[savespan[spannum]] = rand;
   }
   /**
    * @description: 分数
    * @return {*}
    */
   grade() {
-    if (!window.localStorage) {
-      console.log("浏览器不支持localstorage,采用cookie");
-      const cookie = document.cookie;
-      if (!cookie) {
-        setCookie(this.score, 0, 80);
-        this.history = 0;
-      } else {
-        this.history = Number(getCookie(this.score)) || 0;
-        if (this.score > this.history) {
-          removeCookie(this.score);
-          setCookie(this.score, Number(this.score), 80);
-          this.history = Number(getCookie(this.score));
-        }
-      }
+    const storage = window.localStorage;
+    if (!storage.score) {
+      storage.score = 0;
+      this.history = 0;
     } else {
-      const storage = window.localStorage;
-      if (!storage.score) {
-        storage.score = 0;
-        this.history = 0;
-      } else {
-        this.history = storage.score;
-        if (this.score > this.history) {
-          storage.score = this.score;
-          this.history = this.score;
-        }
+      this.history = storage.score;
+      if (this.score > this.history) {
+        storage.score = this.score;
+        this.history = this.score;
       }
     }
   }
@@ -382,74 +342,74 @@ export default class HelloWorld extends Vue {
         setTimeout(() => {
           this.showAlert = true;
           this.endText = "恭喜通关！";
-
           this.grade();
         });
       }
     }
   }
-  gameover(num: any) {
-    // let proparr = [];
-    // let truelist = [];
-    // let savearr1 = [];
-    // let savearr2 = [];
-    // let savearr3 = [];
-    // let savearr4 = [];
-    // let savearr5 = [];
-    // let savearr6 = [];
-    // let savearr7 = [];
-    // let savearr8 = [];
-    // for (let prop of this.txt) {
-    //   proparr.push(Number($(prop).text()));
-    // }
-    // for (let i = 0; i < proparr.length; i++) {
-    //   if (proparr[i] == 0) {
-    //     proparr.splice(i, 1);
-    //     i--;
-    //   }
-    // }
-    // for (let i = 0; i < 4; i++) {
-    //   savearr1.push($(this.newarr1[i]).children().text());
-    //   savearr2.push($(this.newarr2[i]).children().text());
-    //   savearr3.push($(this.newarr3[i]).children().text());
-    //   savearr4.push($(this.newarr4[i]).children().text());
-    //   savearr5.push($(this.arr1[i]).children().text());
-    //   savearr6.push($(this.arr2[i]).children().text());
-    //   savearr7.push($(this.arr3[i]).children().text());
-    //   savearr8.push($(this.arr4[i]).children().text());
-    // }
-    // if (
-    //   proparr.length == 16 &&
-    //   savearr1[0] !== savearr1[1] &&
-    //   savearr1[1] !== savearr1[2] &&
-    //   savearr1[2] !== savearr1[3] &&
-    //   savearr2[0] !== savearr2[1] &&
-    //   savearr2[1] !== savearr2[2] &&
-    //   savearr2[2] !== savearr2[3] &&
-    //   savearr3[0] !== savearr3[1] &&
-    //   savearr3[1] !== savearr3[2] &&
-    //   savearr3[2] !== savearr3[3] &&
-    //   savearr4[0] !== savearr4[1] &&
-    //   savearr4[1] !== savearr4[2] &&
-    //   savearr4[2] !== savearr4[3] &&
-    //   savearr5[0] !== savearr5[1] &&
-    //   savearr5[1] !== savearr5[2] &&
-    //   savearr5[2] !== savearr5[3] &&
-    //   savearr6[0] !== savearr6[1] &&
-    //   savearr6[1] !== savearr6[2] &&
-    //   savearr6[2] !== savearr6[3] &&
-    //   savearr7[0] !== savearr7[1] &&
-    //   savearr7[1] !== savearr7[2] &&
-    //   savearr7[2] !== savearr7[3] &&
-    //   savearr8[0] !== savearr8[1] &&
-    //   savearr8[1] !== savearr8[2] &&
-    //   savearr8[2] !== savearr8[3]
-    // ) {
-    //   this.count++;
-    // }
-    if (this.count == 1) {
+  /**
+   * @description: 结束
+   * @return {*}
+   * 如果一个元素和他的右边下变都不相同，就到下一个
+   */
+  gameover() {
+    let row = 0;
+    let line = 0;
+    let count = 0;
+    while (row < this.gameLength) {
+      line = 0;
+      if (row < this.gameLength - 1) {
+        while (line < this.gameLength) {
+          if (line < this.gameLength - 1) {
+            if (this.myListObject[`${line},${row}`] === 0) {
+              count++;
+            }
+
+            if (
+              this.myListObject[`${line},${row}`] ===
+                this.myListObject[`${line + 1},${row}`] ||
+              this.myListObject[`${line},${row}`] ===
+                this.myListObject[`${line},${row + 1}`]
+            ) {
+              count++;
+            }
+          } else {
+            if (this.myListObject[`${line},${row}`] === 0) {
+              count++;
+            }
+            if (
+              this.myListObject[`${line},${row}`] ===
+              this.myListObject[`${line},${row + 1}`]
+            ) {
+              count++;
+            }
+          }
+          line++;
+        }
+      } else {
+        while (line < this.gameLength) {
+          if (this.myListObject[`${line},${row}`] === 0) {
+            count++;
+          }
+          if (line < this.gameLength - 1) {
+            if (
+              this.myListObject[`${line},${row}`] ===
+              this.myListObject[`${line + 1},${row}`]
+            ) {
+              count++;
+            }
+          } else {
+            if (this.myListObject[`${line},${row}`] === 0) {
+              count++;
+            }
+          }
+          line++;
+        }
+      }
+      row++;
+    }
+    if (count === 0) {
       setTimeout(() => {
-        console.log(1);
         this.endText = "游戏结束!";
         this.showAlert = true;
         this.grade();
@@ -457,13 +417,10 @@ export default class HelloWorld extends Vue {
     }
   }
   again() {
+    this.score = 0;
     this.showAlert = false;
     this.myListObject = {};
     this.init();
-  }
-  @Watch("myListObject", { immediate: true, deep: true })
-  onmyListObject(val: any, oldVal: any) {
-    console.log(val, oldVal);
   }
 }
 </script>
