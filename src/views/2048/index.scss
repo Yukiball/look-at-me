@@ -162,7 +162,7 @@ body {
   background-color: #edc22e;
   font-size: 35px;
 }
-.aleart {
+.alert {
   position: absolute;
   top: 0;
   height: 100%;
@@ -171,7 +171,7 @@ body {
   font-size: 40px;
   z-index: 100;
 }
-.aleart .over {
+.alert .over {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -179,7 +179,7 @@ body {
   line-height: 40px;
   transform: translate(-50%, -50%);
 }
-.aleart .score {
+.alert .score {
   position: absolute;
   color: #fff;
   background-color: #f2b179;
@@ -190,7 +190,7 @@ body {
   transform: translate(-50%, -50%);
   text-align: center;
 }
-.aleart .agin {
+.alert .agin {
   cursor: pointer;
   position: absolute;
   left: 50%;
@@ -325,22 +325,23 @@ body {
     background-color: #edc22e;
     font-size: 15px;
   }
-  .aleart {
+  .alert {
     position: absolute;
     height: 100%;
     width: 100%;
     background-color: rgba(238, 228, 218, 0.8);
     font-size: 20px;
     z-index: 100;
+    left: 0;
   }
-  .aleart .over {
+  .alert .over {
     position: absolute;
     left: 50%;
     top: 50%;
     margin-top: -150px;
     transform: translate(-50%, -50%);
   }
-  .aleart .score {
+  .alert .score {
     position: absolute;
     color: #fff;
     background-color: #f2b179;
@@ -352,7 +353,7 @@ body {
     transform: translate(-50%, -50%);
     text-align: center;
   }
-  .aleart .agin {
+  .alert .agin {
     position: absolute;
     left: 50%;
     margin-left: -50px;

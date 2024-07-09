@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/2048">2048</router-link>
-    </nav>
     <router-view />
   </div>
 </template>

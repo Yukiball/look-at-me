@@ -1,9 +1,5 @@
 <template>
   <div class="game">
-    <div id="logo">
-      <img src="~@/assets/yuki.png" />
-      <div>扫描这里试玩手机版</div>
-    </div>
     <div class="wrapper">
       <div class="top">
         <div class="grade">
@@ -21,20 +17,6 @@
       <div class="text">将相同数字融合相加，得到 2048 获胜!</div>
       <div class="box">
         <ul class="con">
-          <!-- <li
-            class="numbox"
-            v-for="(value, index) of myList"
-            :key="index"
-            :count="`${value[0]},${value[1]}`"
-            :line="value[0]"
-            :list="value[1]"
-          >
-            <span
-              :class="boxcolor(value[0], value[1])"
-              v-show="+listObj(value[0], value[1])"
-              >{{ listObj(value[0], value[1]) }}</span
-            >
-          </li> -->
           <li
             class="numbox"
             v-for="(val, key, index) of myListObject"
@@ -46,7 +28,7 @@
         </ul>
       </div>
     </div>
-    <div class="aleart" v-if="showAlert">
+    <div class="alert" v-if="showAlert">
       <span class="over">{{ endText }}</span
       ><span class="score">您的分数为:{{ score }}</span
       ><span class="agin" @click="again">再来一次</span>
@@ -56,28 +38,18 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import {
-  getRandom,
-  setCookie,
-  getCookie,
-  removeCookie,
-  $,
-  $$,
-} from "@/plugin/commonFun/commonFun";
+import { getRandom } from "@/plugin/commonFun/commonFun";
 @Component
 export default class HelloWorld extends Vue {
   gameLength = 4;
   score = 0;
   history = 0;
-  txt: any; // 应该是HTMLElement，但是还得有初始值。
   rem: Array<any> = [];
-  // myList: Array<any> = [];
   myListObject: any = {};
   startX = 0;
   startY = 0;
   endX = 0;
   endY = 0;
-  numbox: any;
   showAlert = false;
   endText = "";
   toDirection = {
@@ -129,9 +101,6 @@ export default class HelloWorld extends Vue {
         // this.myListObject[`${i},${j}`] = 0;
       }
     }
-    this.$nextTick(() => {
-      this.numbox = $(".numbox");
-    });
   }
   getNum() {
     let newArr = [];
