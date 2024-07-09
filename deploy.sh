@@ -3,7 +3,7 @@
  # @Author: yukiball yukiball
  # @Date: 2024-07-09 17:34:36
  # @LastEditors: yukiball yukiball
- # @LastEditTime: 2024-07-09 17:36:32
+ # @LastEditTime: 2024-07-09 20:20:06
  # @FilePath: \look-at-me\deploy.sh
  # @Description: 
  # 
@@ -27,7 +27,7 @@ git add -A
 git commit -m 'deploy'
 
 # 部署到 https://<USERNAME>.github.io
-# git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git master
+# git push -f git@github.com:yukiball/yukiball.github.io.git master
 
 # 部署到 https://<USERNAME>.github.io/<REPO>
 git push -f git@github.com:yukiball/look-at-me.git master:gh-pages
