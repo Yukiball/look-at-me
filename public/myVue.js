@@ -2,7 +2,7 @@
  * @Author: yukiball yukiball
  * @Date: 2024-07-12 17:54:07
  * @LastEditors: yukiball yukiball
- * @LastEditTime: 2024-07-12 17:54:57
+ * @LastEditTime: 2024-07-13 20:58:11
  * @FilePath: \look-at-me\public\myVue.js
  * @Description:
  *
@@ -12,7 +12,7 @@ const someBody = {
   myName: "yuki",
   age: 18,
 };
-watcher(someBody);
+observer(someBody);
 function changeName() {
   let dom = document.querySelector("#name");
   dom.innerHTML = someBody.myName;
@@ -26,7 +26,7 @@ function changeInput() {
   let dom = document.querySelector("#input");
   dom.value = someBody.myName;
 }
-function watcher(obj) {
+function observer(obj) {
   for (const key in obj) {
     let internalValue = obj[key];
     const func = new Set(); // 保证方法唯一
