@@ -1,3 +1,13 @@
+/*
+ * @Author: yukiball yukiball
+ * @Date: 2024-07-11 21:51:26
+ * @LastEditors: yukiball yukiball
+ * @LastEditTime: 2024-07-16 00:07:04
+ * @FilePath: \look-at-me\src\plugin\commonFun\myPromise.ts
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+ */
 const PENDING = "pending";
 const FULFILLED = "fulfilled";
 const REJECTED = "rejected";
@@ -116,7 +126,7 @@ export class MyPromise {
     });
   }
 
-  static all(proms: any) {
+  static all(proms: Iterable<any>) {
     return new MyPromise((res, rej) => {
       try {
         const saveArr: any[] = [];
@@ -125,7 +135,7 @@ export class MyPromise {
         for (const p of proms) {
           const i = count;
           count++;
-          MyPromise.resolve(p).then((data: any) => {
+          this.resolve(p).then((data: any) => {
             fulfilledCount++;
             saveArr[i] = data;
             if (count === fulfilledCount) {
@@ -142,9 +152,54 @@ export class MyPromise {
       }
     });
   }
+  static allSettled(proms: Iterable<any>) {
+    const saveArr = [];
+    for (const p of proms) {
+      saveArr.push(
+        this.resolve(p).then(
+          (data: any) => ({
+            state: FULFILLED,
+            result: data,
+          }),
+          (reason: any) => ({
+            state: REJECTED,
+            result: reason,
+          })
+        )
+      );
+    }
+    return this.all(saveArr);
+  }
+  static race(proms: Iterable<any>) {
+    return new MyPromise((resolve, reject) => {
+      for (const p of proms) {
+        this.resolve(p).then(resolve, reject);
+      }
+    });
+  }
+  static any(proms: Iterable<any>) {
+    return new MyPromise((resolve, reject) => {
+      const saveArr: Array<any> = [];
+      let count = 0;
+      let rejectCount = 0;
+      try {
+        for (const p of proms) {
+          const i = count;
+          count++;
+          this.resolve(p).then(resolve, (reason: any) => {
+            saveArr[i] = reason;
+            rejectCount++;
+            if (rejectCount === count) {
+              reject(new AggregateError(saveArr, "All promises were rejected"));
+            }
+          });
+        }
+      } catch (error) {
+        reject(new AggregateError([error], "All promises were rejected"));
+      }
+    });
+  }
 }
-
-Promise.all([1, 2, 3, 4]);
 
 // const p = new MyPromise((res, rej) => {
 //   throw Error("123");
