@@ -17,14 +17,16 @@
       <div class="text">将相同数字融合相加，得到 2048 获胜!</div>
       <div class="box">
         <ul class="con">
-          <li
-            class="numbox"
-            v-for="(val, key, index) of myListObject"
-            :key="index"
-            :count="key"
-          >
-            <span :class="boxcolor(val)" v-show="+val">{{ val }}</span>
-          </li>
+          <transition-group>
+            <li
+              class="numbox"
+              v-for="(val, key, index) of myListObject"
+              :key="index"
+              :count="key"
+            >
+              <span :class="boxcolor(val)" v-show="+val">{{ val }}</span>
+            </li>
+          </transition-group>
         </ul>
       </div>
 
@@ -103,9 +105,7 @@ export default class HelloWorld extends Vue {
     this.myListObject = {};
     for (let i = 0; i < this.gameLength; i++) {
       for (let j = 0; j < this.gameLength; j++) {
-        // this.myList.push([i, j]);
         this.$set(this.myListObject, `${i},${j}`, 0);
-        // this.myListObject[`${i},${j}`] = 0;
       }
     }
   }
@@ -256,24 +256,17 @@ export default class HelloWorld extends Vue {
         }
         for (let i = 0; i < this.gameLength; i++) {
           if (direction === "left") {
-            this.$set(this.myListObject, `${saveLine},${i}`, arr[i] || 0);
+            this.myListObject[`${saveLine},${i}`] = arr[i] || 0;
           } else if (direction === "right") {
-            this.$set(
-              this.myListObject,
-              `${saveLine},${this.gameLength - i - 1}`,
-              arr[i] || 0
-            );
+            this.myListObject[`${saveLine},${this.gameLength - i - 1}`] =
+              arr[i] || 0;
           } else if (direction === "up") {
-            this.$set(this.myListObject, `${i},${saveLine}`, arr[i] || 0);
+            this.myListObject[`${i},${saveLine}`] = arr[i] || 0;
           } else {
-            this.$set(
-              this.myListObject,
-              `${this.gameLength - i - 1},${saveLine}`,
-              arr[i] || 0
-            );
+            this.myListObject[`${this.gameLength - i - 1},${saveLine}`] =
+              arr[i] || 0;
           }
         }
-
         saveLine = line;
         saveArr = [];
         saveArr.push(this.myListObject[value]);
