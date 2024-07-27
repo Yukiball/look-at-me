@@ -13,7 +13,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import { MyPromise } from "@/plugin/commonFun/myPromise";
-
+import $ from "jquery";
+console.log($);
 Vue.config.productionTip = false;
 (window as any).MyPromise = MyPromise;
 new Vue({
