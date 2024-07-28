@@ -1,5 +1,15 @@
 <!--
  * @Author: yukiball yukiball
+ * @Date: 2024-07-09 19:14:15
+ * @LastEditors: yukiball yukiball
+ * @LastEditTime: 2024-07-28 17:01:51
+ * @FilePath: \look-at-me\src\views\HomeView.vue
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+-->
+<!--
+ * @Author: yukiball yukiball
  * @Date: 2024-07-09 17:05:58
  * @LastEditors: yukiball yukiball
  * @LastEditTime: 2024-07-28 00:36:00
@@ -11,17 +21,13 @@
 <template>
   <div class="content">
     <div class="pc">
-      <img src="~@/assets/logo.png" alt="" />
+      <img src="~@/assets/logo.png" alt="" @click="jumpDemo" />
       <HelloWorld msg="~欢迎来到我的项目展示页面~"></HelloWorld>
       <div class="green btn showqr">小程序展示</div>
       <div class="blue btn" @click="goDoc">学习doc</div>
       <div class="yellow btn" @click="to2048">玩一会儿吧</div>
     </div>
-    <!-- <input v-if="type" type="text" v-myfocus="showdata" />
-    <button @click="type = !type">demo</button> -->
     <div class="phone">请用pc端打开~</div>
-    <input type="text" v-model="mytext" />
-    <div v-copy="mytext">{{ mytext }}</div>
   </div>
 </template>
 
@@ -41,6 +47,7 @@ import { copy } from "@/directives/copy";
 })
 export default class HomeView extends Vue {
   type = false;
+  jumpKey = 0;
   private mytext = "这是初始值";
   private showdata = { a: 1, b: 2 };
   to2048() {
@@ -48,6 +55,13 @@ export default class HomeView extends Vue {
   }
   goDoc() {
     window.open("https://yukiball.github.io/display/");
+  }
+  jumpDemo() {
+    this.jumpKey++;
+    if (this.jumpKey > 5) {
+      this.$router.push({ path: "/demo" });
+      this.jumpKey = 0;
+    }
   }
 }
 </script>

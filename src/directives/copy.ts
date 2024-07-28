@@ -1,3 +1,13 @@
+/*
+ * @Author: yukiball yukiball
+ * @Date: 2024-07-28 00:15:06
+ * @LastEditors: yukiball yukiball
+ * @LastEditTime: 2024-07-28 17:15:10
+ * @FilePath: \look-at-me\src\directives\copy.ts
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+ */
 let timer: any = null;
 const textarea = document.createElement("textarea");
 
@@ -10,6 +20,11 @@ export const copy = {
     el.addEventListener("mouseup", clear);
   },
   update(el: any, binding: any, vnode: any) {
+    console.log("update");
+    console.log(el, binding, vnode);
+    textarea.value = binding.value || "";
+  },
+  componentUpdated(el: any, binding: any, vnode: any) {
     console.log("componentUpdated");
     console.log(el, binding, vnode);
     textarea.value = binding.value || "";

@@ -2,7 +2,7 @@
  * @Author: yukiball yukiball
  * @Date: 2024-07-23 18:26:46
  * @LastEditors: yukiball yukiball
- * @LastEditTime: 2024-07-28 00:28:46
+ * @LastEditTime: 2024-07-28 23:53:16
  * @FilePath: \look-at-me\src\plugin\commonFun\keli.js
  * @Description:
  *
@@ -128,3 +128,63 @@
 //   return arr;
 // };
 // shuffle([1, 2, 3, 4, 5, 6]);
+
+// function compire(a, b) {
+//   return a < b;
+// }
+
+// function maopao(array) {
+//   for (let i = 0; i < array.length; i++) {
+//     for (let j = 0; j < array.length - 1 - i; j++) {
+//       if (compire(array[j], array[j + 1])) {
+//         [array[j], array[j + 1]] = [array[j + 1], array[j]];
+//       }
+//     }
+//   }
+//   return array;
+// }
+
+// function kuaipai(array) {
+//   if (array == null || array.length === 0) {
+//     return [];
+//   }
+//   let left = [];
+//   let right = [];
+//   let key = array[0];
+//   for (let i = 1; i < array.length; i++) {
+//     if (array[i] < key) {
+//       left.push(array[i]);
+//     } else {
+//       right.push(array[i]);
+//     }
+//   }
+//   left = kuaipai(left);
+//   right = kuaipai(right);
+//   left.push(key);
+//   return [...left, ...right];
+// }
+
+function erfen(arr, target) {
+  if (arr == null || arr.length === 0) {
+    return -1;
+  }
+  let low = 0;
+  let hight = arr.length - 1;
+  if (target > arr[hight] || target < arr[low]) {
+    return -1;
+  }
+  while (low < hight) {
+    let middle = Math.floor((low + hight) / 2);
+    console.log(low, hight);
+    if (target < arr[middle]) {
+      hight = middle - 1;
+      console.log("hight", hight);
+    } else if (target > arr[middle]) {
+      low = middle + 1;
+      console.log("low", low);
+    } else {
+      return middle;
+    }
+  }
+}
+console.log(erfen([2, 3, 4, 5, 5, 6, 7, 8, 9], 5));

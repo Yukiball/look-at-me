@@ -1,3 +1,4 @@
+import axios from "axios";
 export const getRandom = (min: number, max: number) => {
   const range = max - min;
   const rand = Math.random();
@@ -24,10 +25,19 @@ export const getCookie = (key: string | number) => {
 export const removeCookie = (key: string | number) => {
   setCookie(key, "", -1);
 };
-
-export const $ = (name: any) => {
-  return document.querySelector(name);
+const option = {
+  withCredentials: true,
+  headers: {
+    get: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      // 在开发中，一般还需要单点登录或者其他功能的通用请求头，可以一并配置进来
+    },
+    post: {
+      "Content-Type": "application/json;charset=utf-8",
+      // 在开发中，一般还需要单点登录或者其他功能的通用请求头，可以一并配置进来
+    },
+  },
 };
-export const $$ = (name: any) => {
-  return document.querySelectorAll(name);
+export const $post = (url: string, data: any, config: any) => {
+  return axios.post(url, data, { ...option, ...config });
 };

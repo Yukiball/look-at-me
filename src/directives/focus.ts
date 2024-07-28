@@ -12,16 +12,12 @@ export const myfocus = {
   inserted(el: any, binding: any, vnode: any) {
     console.log("inserted");
     el.focus();
-    console.log(binding);
   },
   bind(el: any, binding: any, vnode: any) {
     console.log("bind");
-    // el.focus();
-    console.log(binding);
   },
   update(el: any, binding: any, vnode: any) {
     console.log("update");
-    console.log(binding);
   },
   componentUpdated(el: any, binding: any, vnode: any) {
     console.log("componentUpdated", binding);
